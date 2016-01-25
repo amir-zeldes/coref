@@ -6,11 +6,18 @@ Multiple gold files from the ./11docs/ directory will be read.Output will be one
 Note that due to restricted license on the OntoNotes and PennTreeBank, the actual documents will not be included here.
 
 Usage:
+
 to run it on a directory 11docs/ and write to one output file (11docs containing all ontoNotes gold .coref files): <br>
 <code>python genConllGold.py -w 11docs/</code>
 
 alternatively, to run it with a print option will take one file (.coref) as input and output the converted format into the stdout, for example:
 <br><code>python genConllGold.py -p wsj_0120.coref</code>
+
+(or to use -w in this case to write output to one file)
+
+There is also a simple script, formatXML.py, to output the well formatted (indented) gold file as xml, for instance:
+
+<code>$ python formatXML.py wsj_2321.coref >> wsj21.xml </code>
 
 <h2> 2. Output OntoNotes gold file to html </h2>
 
@@ -20,7 +27,7 @@ Usage (take one input file and redirect the stdout to a file):
 
 <code>$ python OntoToHtml.py 11docsonly/wsj_0120.coref >>html_ex/wsj_0120_gold.html</code>
 
-if no redirection is used, currently will print html to stdout. To batch process all coref gold files in a directory, use the shell script provided, modify it to suit your directory name (below shows usage on UNIX bash):
+if no redirection is used, currently will print html to stdout. To batch process all coref gold files in a directory, use the shell script provided, after modifying it to suit your directory name (below shows usage on UNIX bash):
 
 <code> $ exec ./OntoConll.sh</code>
 
@@ -38,3 +45,15 @@ Usage:
 (2) In "directory" -d mode, extract and output (to stdout) all book titles from all .parse files under the specified directory, and redirect the output to a text file using:
 
 <code>$ python extractTTL.py -d const_parses/ >> all_titles.txt </code>
+
+<h2> 4. More Preprocessing for OntoNotes gold files: nested markable removal and kill singleton (ref. sec.23 of wsj) </h2>
+
+Nested markable is a markable inside another markable with the same ID. After the inner redundant markable is removed, we check if outter markable becomes a singleton - at which occasion we also remove the outter markable. This is in accordance with the OntoNotes coref guidelines. 
+
+Example Usage:
+
+<code> $ python rmNestKilSg.py wsj_2320.coref >> wsj_2320_new.coref </code>
+
+To batch process, use the shell script (Bash on mac) after you've modified the input directory where all the original .coref gold files are located:
+
+<code> $ exec ./fixNest.sh </code>
